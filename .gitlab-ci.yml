@@ -8,6 +8,7 @@ pages:
     - pip install requests
   script:
     - if [ -n "$PROJECT_ID" ]; then python3 scripts/gen_assets.py; fi
+    - if [ -n "$PROJECT_ID" ]; then python3 scripts/gen_models.py; fi
     - mkdir .public
     - cp -r docs/* .public
     # inject project ID / token if provided by CI variables
