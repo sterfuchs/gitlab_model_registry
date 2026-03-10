@@ -61,16 +61,27 @@ main {
 #results {
   margin-top: 20px;
 }
-/* each release entry */
-.asset {
-  border-bottom: 1px solid #ddd;
+/* each project entry */
+.project {
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+.project h2 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+/* each release or model under project */
+.release, .model {
+  margin-left: 20px;
+  border-bottom: 1px solid #eee;
   padding: 10px 0;
 }
-.asset h3 {
+.release h3, .model h3 {
   margin: 0 0 5px 0;
-  font-size: 18px;
+  font-size: 16px;
 }
-.asset p {
+.release p, .model p {
   margin: 0;
   font-size: 14px;
   color: #666;

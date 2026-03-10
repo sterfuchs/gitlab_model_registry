@@ -50,7 +50,7 @@ def fetch_project_releases(proj_id, namespace, project_name):
     return releases
 
 # determine whether PROJECT_ID is a group or project
-assets = []
+projects_data = []
 # try group endpoint first
 grp_resp = requests.get(f"{API_BASE}/groups/{PROJECT_ID}", headers=headers)
 if grp_resp.ok:
@@ -62,7 +62,13 @@ if grp_resp.ok:
             break
         for proj in projects:
             ns = proj.get('namespace', {}).get('full_path', PROJECT_ID)
-            assets.extend(fetch_project_releases(proj['id'], ns, proj['path']))
+            releases = fetch_project_releases(proj['id'], ns, proj['path'])
+            if releases:  # only include projects with releases
+                projects_data.append({
+                    'project_name': proj['path'],
+                    'namespace': ns,
+                    'releases': releases
+                })
         if len(projects) < 100:
             break
         pg += 1
@@ -74,8 +80,13 @@ else:
         sys.exit(1)
     proj = proj_resp.json()
     ns = proj.get('namespace', {}).get('full_path', PROJECT_ID)
-    assets = fetch_project_releases(proj['id'], ns, proj.get('path', ''))
+    releases = fetch_project_releases(proj['id'], ns, proj.get('path', ''))
+    projects_data.append({
+        'project_name': proj.get('path', ''),
+        'namespace': ns,
+        'releases': releases
+    })
 
 with open('docs/assets.json', 'w') as f:
-    json.dump(assets, f, indent=2)
-print(f"Wrote {len(assets)} releases to docs/assets.json")
+    json.dump(projects_data, f, indent=2)
+print(f"Wrote {len(projects_data)} projects with releases to docs/assets.json")

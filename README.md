@@ -18,7 +18,7 @@ This repository hosts a simple GitLab Pages site that acts as a lightweight regi
 
 1. Set `PROJECT_ID` in `docs/js/main.js` to the numeric ID or URL‑encoded path of your GitLab project or group.
 2. If the project is private, supply a `PRIVATE_TOKEN` via CI/CD environment variables (avoid embedding it in the repo). The pipeline will inject these values at build time.
-3. The CI job now pre‑generates an `assets.json` file by calling the GitLab API for project releases plus a `models.json` file from the GitLab Model Registry endpoint. This ensures both lists are ready when the site loads and reduces rate‑limit issues.
+3. The CI job now pre‑generates `assets.json` (structured by projects with releases/assets) and `models.json` (projects with models) by calling the GitLab API. This ensures the hierarchical lists are ready when the page loads.
 
    The relevant portion of `.gitlab-ci.yml` looks like:
 
@@ -44,10 +44,10 @@ pages:
 
 The site now supports two views:
 
-* **Releases** – the default tab, showing project/group releases as before.
-* **Models** – a new tab that queries the GitLab Model Registry and lists all models for the configured project/group.
+* **Releases** – shows projects (from the configured group/project), each with a dropdown to expand releases. Each release has a dropdown for its assets.
+* **Models** – shows projects with a dropdown to expand models in their registry.
 
-Controls (search box, filters, sort dropdown) update based on the selected tab.
+Controls (search box, filters, sort dropdown) apply across the hierarchical data. Search uses fuzzy matching on nested fields (e.g., release names, model descriptions).
 
 ## Extending the site
 
@@ -61,7 +61,7 @@ The registry page now provides multiple controls:
 
 - A **search box** (fuzzy, case-insensitive) that matches release names, tag names, project names, namespace/team fields, or asset names when assets are shown.
 - A **team/group dropdown** automatically populated from the release list; select one to filter results to that namespace.
-- A **sort selector** letting you order results by release date, creation date, tag name, or project when on the Releases tab, or by name/version when on the Models tab.
+- A **sort selector** letting you order projects by name or namespace.
 These enhancements make it easy to browse releases across different teams or subgroups and to surface recent or important milestones. Click a release title to open it on GitLab; expand the "Show assets" section to view downloadable artifacts (generated from either `assets.links` or `assets.sources` in GitLab API).
 
 ## Lessons & research
