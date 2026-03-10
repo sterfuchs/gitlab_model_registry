@@ -2,6 +2,7 @@
 import os, sys, requests, json
 
 API_BASE = 'https://gitlab.com/api/v4'
+GITLAB_INSTANCE = 'https://gitlab.com'
 PROJECT_ID = os.environ.get('PROJECT_ID')
 TOKEN = os.environ.get('PRIVATE_TOKEN', '')
 
@@ -34,10 +35,14 @@ def fetch_project_releases(proj_id, namespace, project_name):
             rel.setdefault('assets', {}).setdefault('links', [])
             # for convenience, include direct URL to release page if available
             if '_links' in rel and 'self' in rel['_links']:
-                rel['release_url'] = rel['_links']['self']
+                self_url = rel['_links']['self']
+                if self_url.startswith('/'):
+                    rel['release_url'] = GITLAB_INSTANCE + self_url
+                else:
+                    rel['release_url'] = self_url
             else:
                 # construct from namespace/project/tag
-                rel['release_url'] = f"https://gitlab.com/{namespace}/{project_name}/-/releases/{rel.get('tag_name','')}"
+                rel['release_url'] = f"{GITLAB_INSTANCE}/{namespace}/{project_name}/-/releases/{rel.get('tag_name','')}"
             releases.append(rel)
         if len(data) < 100:
             break

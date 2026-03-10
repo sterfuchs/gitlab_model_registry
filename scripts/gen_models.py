@@ -2,6 +2,7 @@
 import os, sys, requests, json
 
 API_BASE = 'https://gitlab.com/api/v4'
+GITLAB_INSTANCE = 'https://gitlab.com'
 PROJECT_ID = os.environ.get('PROJECT_ID')
 TOKEN = os.environ.get('PRIVATE_TOKEN', '')
 
@@ -41,7 +42,11 @@ else:
 for pkg in models:
     pkg['namespace'] = namespace
     pkg['project_name'] = project_name
-    pkg['url'] = pkg.get('_links', {}).get('web_path', '')
+    web_path = pkg.get('_links', {}).get('web_path', '')
+    if web_path.startswith('/'):
+        pkg['url'] = GITLAB_INSTANCE + web_path
+    else:
+        pkg['url'] = web_path
 
 
 with open('docs/models.json', 'w') as f:
