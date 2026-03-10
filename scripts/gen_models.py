@@ -15,8 +15,8 @@ if TOKEN:
 models = []
 page = 1
 while True:
-    params = {'per_page': 100, 'page': page}
-    resp = requests.get(f"{API_BASE}/projects/{PROJECT_ID}/model_registry/models", headers=headers, params=params)
+    params = {'package_type': 'ml_model', 'per_page': 100, 'page': page}
+    resp = requests.get(f"{API_BASE}/projects/{PROJECT_ID}/packages", headers=headers, params=params)
     if not resp.ok:
         print(f"Failed to fetch models page {page}: {resp.status_code} {resp.text}", file=sys.stderr)
         sys.exit(1)
@@ -38,9 +38,11 @@ if proj_resp.ok:
 else:
     namespace = ''
     project_name = ''
-for m in models:
-    m['namespace'] = namespace
-    m['project_name'] = project_name
+for pkg in models:
+    pkg['namespace'] = namespace
+    pkg['project_name'] = project_name
+    pkg['url'] = pkg.get('_links', {}).get('web_path', '')
+
 
 with open('docs/models.json', 'w') as f:
     json.dump(models, f, indent=2)
