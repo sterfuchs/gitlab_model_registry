@@ -1,0 +1,21 @@
+# GitLab Pages pipeline configuration
+# Builds and publishes content from the docs/ directory
+
+pages:
+  stage: deploy
+  image: python:3.11-slim
+  before_script:
+    - pip install requests
+  script:
+    - if [ -n "$PROJECT_ID" ]; then python3 scripts/gen_assets.py; fi
+    - mkdir .public
+    - cp -r docs/* .public
+    # inject project ID / token if provided by CI variables
+    - if [ -n "$PROJECT_ID" ]; then sed -i "s|<PROJECT_ID>|$PROJECT_ID|" .public/js/main.js; fi
+    - if [ -n "$PRIVATE_TOKEN" ]; then sed -i "s|<PRIVATE_TOKEN>|$PRIVATE_TOKEN|" .public/js/main.js; fi
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

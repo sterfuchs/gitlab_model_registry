@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Registry</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Release Registry</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="lessons.html">Lessons & Research</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="controls">
+      <input type="text" id="search" placeholder="Search releases..." />
+      <select id="filter-namespace">
+        <option value="">All teams/groups</option>
+      </select>
+      <select id="sort-by">
+        <option value="released_at">Released date</option>
+        <option value="created_at">Created date</option>
+        <option value="tag_name">Tag name</option>
+        <option value="project_name">Project</option>
+        <option value="assets_count">Asset count</option>
+      </select>
+    </section>
+    <section id="results">
+      <!-- Results will be injected here -->
+    </section>
+  </main>
+
+  <footer>
+    <p>Generated via GitLab Pages &amp; GitLab API</p>
+  </footer>
+
+  <!-- Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
